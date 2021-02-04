@@ -20,7 +20,19 @@ pub struct WebSocketConnection(
 );
 
 impl WebSocketConnection {
-    /// Sends a string message to the connected websocket client
+    /// Sends a ping message to the connected websocket client
+    pub async fn send_ping(&self, s: Vec<u8>) -> async_tungstenite::tungstenite::Result<()> {
+        self.0.lock().send(Message::Ping(s)).await?;
+        Ok(())
+    }
+
+    /// Sends a pong message to the connected websocket client
+    pub async fn send_pong(&self, s: Vec<u8>) -> async_tungstenite::tungstenite::Result<()> {
+        self.0.lock().send(Message::Pong(s)).await?;
+        Ok(())
+    }
+
+    // Sends a string message to the connected websocket client
     pub async fn send_string(&self, s: String) -> async_tungstenite::tungstenite::Result<()> {
         self.0.lock().send(Message::Text(s)).await?;
         Ok(())
